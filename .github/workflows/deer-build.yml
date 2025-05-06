@@ -1,5 +1,9 @@
 name: Build deer.social
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches:
+      - notnite/android-gha-dev
+  workflow_dispatch:
 
 jobs:
   deer-build-android:
