@@ -47,7 +47,7 @@ const currentAccountSchema = accountSchema.extend({
 export type PersistedCurrentAccount = z.infer<typeof currentAccountSchema>
 
 const schema = z.object({
-  colorMode: z.enum(['system', 'light', 'dark']),
+  colorMode: z.enum(['system', 'light', 'dark', 'materialYou']),
   darkTheme: z.enum(['dim', 'dark']).optional(),
   session: z.object({
     accounts: z.array(accountSchema),

@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import {useCallback} from 'react'
 import Animated, {
   FadeInUp,
   FadeOutUp,
@@ -7,16 +7,17 @@ import Animated, {
 } from 'react-native-reanimated'
 import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
+import type React from 'react';
 
 import {IS_INTERNAL} from '#/lib/app-info'
-import {CommonNavigatorParams, NativeStackScreenProps} from '#/lib/routes/types'
+import {type CommonNavigatorParams, type NativeStackScreenProps} from '#/lib/routes/types'
 import {useGate} from '#/lib/statsig/statsig'
-import {isNative} from '#/platform/detection'
+import {isAndroid, isNative} from '#/platform/detection'
 import {useSetThemePrefs, useThemePrefs} from '#/state/shell'
 import {SettingsListItem as AppIconSettingsListItem} from '#/screens/Settings/AppIconSettings/SettingsListItem'
 import {atoms as a, native, useAlf, useTheme} from '#/alf'
 import * as ToggleButton from '#/components/forms/ToggleButton'
-import {Props as SVGIconProps} from '#/components/icons/common'
+import {type Props as SVGIconProps} from '#/components/icons/common'
 import {Moon_Stroke2_Corner0_Rounded as MoonIcon} from '#/components/icons/Moon'
 import {Phone_Stroke2_Corner0_Rounded as PhoneIcon} from '#/components/icons/Phone'
 import {TextSize_Stroke2_Corner0_Rounded as TextSize} from '#/components/icons/TextSize'
@@ -105,12 +106,20 @@ export function AppearanceSettingsScreen({}: Props) {
                   label: _(msg`Dark`),
                   name: 'dark',
                 },
+                ...(isAndroid
+                  ? [
+                      {
+                        label: _(msg`Material`),
+                        name: 'materialYou',
+                      },
+                    ]
+                  : []),
               ]}
               values={[colorMode]}
               onChange={onChangeAppearance}
             />
 
-            {colorMode !== 'light' && (
+            {colorMode !== 'light' && colorMode !== 'materialYou' && (
               <Animated.View
                 entering={native(FadeInUp)}
                 exiting={native(FadeOutUp)}>

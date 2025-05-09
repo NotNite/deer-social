@@ -1,10 +1,16 @@
 import {Platform} from 'react-native'
 
 import {tokens} from '#/alf'
-import {darkPalette, dimPalette, lightPalette} from '#/alf/themes'
+import {
+  darkPalette,
+  dimPalette,
+  lightPalette,
+  materialYou,
+  materialYouScheme,
+} from '#/alf/themes'
 import {fontWeight} from '#/alf/tokens'
 import {colors} from './styles'
-import type {Theme} from './ThemeContext'
+import  {type Theme} from './ThemeContext'
 
 export const defaultTheme: Theme = {
   colorScheme: 'light',
@@ -365,6 +371,67 @@ export const dimTheme: Theme = {
       brandText: dimPalette.primary_500,
       emptyStateIcon: dimPalette.contrast_300,
       borderLinkHover: dimPalette.contrast_300,
+    },
+  },
+}
+
+export const materialYouTheme: Theme | undefined = materialYou && {
+  ...defaultTheme,
+  colorScheme: materialYouScheme,
+  palette: {
+    ...defaultTheme.palette,
+
+    default: {
+      background: materialYou.atoms.bg.backgroundColor,
+      backgroundLight: materialYou.atoms.bg_contrast_25.backgroundColor,
+      text: materialYou.atoms.text.color,
+      textLight: materialYou.atoms.text_contrast_medium.color,
+      textInverted: materialYou.atoms.text_inverted.color,
+      link: materialYou.palette.primary_500,
+      border: materialYou.atoms.border_contrast_low.borderColor,
+      borderDark: materialYou.atoms.border_contrast_medium.borderColor,
+      icon: materialYou.palette.contrast_500,
+
+      // non-standard
+      textVeryLight: materialYou.palette.contrast_400,
+      replyLine: materialYou.palette.contrast_100,
+      replyLineDot: materialYou.palette.contrast_200,
+      unreadNotifBg: materialYou.palette.primary_25,
+      unreadNotifBorder: materialYou.palette.primary_100,
+      postCtrl: materialYou.palette.contrast_500,
+      brandText: materialYou.palette.primary_500,
+      emptyStateIcon: materialYou.palette.contrast_300,
+      borderLinkHover: materialYou.palette.contrast_300,
+    },
+
+    primary: {
+      ...defaultTheme.palette.primary,
+      textInverted: materialYouScheme === 'dark' ? colors.blue2 : colors.blue3,
+    },
+    secondary: {
+      ...defaultTheme.palette.secondary,
+      textInverted:
+        materialYouScheme === 'dark' ? colors.green2 : colors.green4,
+    },
+    inverted: {
+      background:
+        materialYouScheme === 'dark'
+          ? materialYou.palette.white
+          : materialYou.palette.black,
+      backgroundLight: materialYou.palette.contrast_50,
+      text:
+        materialYouScheme === 'dark'
+          ? materialYou.palette.black
+          : materialYou.palette.white,
+      textLight: materialYou.palette.contrast_700,
+      textInverted:
+        materialYouScheme === 'dark'
+          ? materialYou.palette.white
+          : materialYou.palette.black,
+      link: materialYou.palette.primary_500,
+      border: materialYou.palette.contrast_100,
+      borderDark: materialYou.palette.contrast_200,
+      icon: materialYou.palette.contrast_500,
     },
   },
 }

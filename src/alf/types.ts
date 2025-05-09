@@ -1,4 +1,4 @@
-import {StyleProp, TextStyle, ViewStyle} from 'react-native'
+import {type StyleProp, type TextStyle, type ViewStyle} from 'react-native'
 
 export type TextStyleProp = {
   style?: StyleProp<TextStyle>
@@ -8,7 +8,7 @@ export type ViewStyleProp = {
   style?: StyleProp<ViewStyle>
 }
 
-export type ThemeName = 'light' | 'dim' | 'dark'
+export type ThemeName = 'light' | 'dim' | 'dark' | 'materialYou'
 export type Palette = {
   white: string
   black: string

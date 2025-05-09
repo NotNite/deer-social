@@ -1,3 +1,7 @@
+import {Appearance} from 'react-native'
+import {getPaletteSync} from '@assembless/react-native-material-you'
+
+import {isAndroid} from '#/platform/detection'
 import {atoms} from '#/alf/atoms'
 import {type Palette, type Theme} from '#/alf/types'
 import {
@@ -29,6 +33,10 @@ export const darkPalette = themes.darkPalette
  */
 export const dimPalette = themes.dimPalette
 /**
+ * @deprecated use ALF and access palette from `useTheme()`
+ */
+export const materialYouPalette = themes.materialYouPalette
+/**
  * @deprecated use ALF and access theme from `useTheme()`
  */
 export const light = themes.light
@@ -40,8 +48,179 @@ export const dark = themes.dark
  * @deprecated use ALF and access theme from `useTheme()`
  */
 export const dim = themes.dim
+/**
+ * @deprecated use ALF and access theme from `useTheme()`
+ */
+export const materialYou = themes.materialYou
+/**
+ * @deprecated use ALF and access theme from `useTheme()`
+ */
+export const materialYouScheme = themes.materialYouScheme
 
 export const defaultTheme = themes.light
+
+function createMaterialYou(palettes: {light: Palette; dark: Palette}): {
+  scheme: 'light' | 'dark'
+  theme?: Theme
+  palette?: Palette
+} {
+  const scheme = Appearance.getColorScheme() ?? 'light'
+  if (!isAndroid) return {scheme}
+
+  const systemPalette = getPaletteSync()
+  if (!systemPalette) return {scheme}
+
+  const lightScheme = scheme === 'light'
+  const basePalette = lightScheme ? palettes.light : palettes.dark
+
+  // index into the arrays returned by the API
+  const materialYouKeys = {
+    _100: 0,
+    _98: 1,
+    _95: 2,
+    _90: 3,
+    _80: 4,
+    _70: 5,
+    _60: 6,
+    _50: 7,
+    _40: 8,
+    _30: 9,
+    _20: 10,
+    _10: 11,
+    _0: 12,
+  }
+
+  // FIXME(NotNite): whatever the fuck this is
+  const neutral = [...systemPalette.system_neutral1]
+  const accent = [...systemPalette.system_accent1]
+  if (!lightScheme) {
+    neutral.reverse()
+    accent.reverse()
+  }
+
+  const palette: Palette = {
+    ...basePalette,
+
+    white: neutral[materialYouKeys._100],
+    black: neutral[materialYouKeys._0],
+
+    contrast_25: neutral[materialYouKeys._98],
+    contrast_50: neutral[materialYouKeys._95],
+    contrast_100: neutral[materialYouKeys._90],
+    contrast_200: neutral[materialYouKeys._80],
+    contrast_300: neutral[materialYouKeys._70],
+    contrast_400: neutral[materialYouKeys._60],
+    contrast_500: neutral[materialYouKeys._50],
+    contrast_600: neutral[materialYouKeys._40],
+    contrast_700: neutral[materialYouKeys._30],
+    contrast_800: neutral[materialYouKeys._20],
+    contrast_900: neutral[materialYouKeys._10],
+    contrast_950: neutral[materialYouKeys._0],
+    contrast_975: neutral[materialYouKeys._0],
+
+    primary_25: accent[materialYouKeys._98],
+    primary_50: accent[materialYouKeys._95],
+    primary_100: accent[materialYouKeys._90],
+    primary_200: accent[materialYouKeys._80],
+    primary_300: accent[materialYouKeys._70],
+    primary_400: accent[materialYouKeys._60],
+    primary_500: accent[materialYouKeys._50],
+    primary_600: accent[materialYouKeys._40],
+    primary_700: accent[materialYouKeys._30],
+    primary_800: accent[materialYouKeys._20],
+    primary_900: accent[materialYouKeys._10],
+    primary_950: accent[materialYouKeys._0],
+    primary_975: accent[materialYouKeys._0],
+  }
+
+  const theme: Theme = {
+    scheme,
+    name: scheme,
+    palette,
+    atoms: {
+      text: {
+        color: palette.black,
+      },
+      text_contrast_low: {
+        color: palette.contrast_400,
+      },
+      text_contrast_medium: {
+        color: palette.contrast_700,
+      },
+      text_contrast_high: {
+        color: palette.contrast_900,
+      },
+      text_inverted: {
+        color: palette.white,
+      },
+      bg: {
+        backgroundColor: palette.contrast_50,
+      },
+      bg_contrast_25: {
+        backgroundColor: palette.contrast_25,
+      },
+      bg_contrast_50: {
+        backgroundColor: palette.contrast_50,
+      },
+      bg_contrast_100: {
+        backgroundColor: palette.contrast_100,
+      },
+      bg_contrast_200: {
+        backgroundColor: palette.contrast_200,
+      },
+      bg_contrast_300: {
+        backgroundColor: palette.contrast_300,
+      },
+      bg_contrast_400: {
+        backgroundColor: palette.contrast_400,
+      },
+      bg_contrast_500: {
+        backgroundColor: palette.contrast_500,
+      },
+      bg_contrast_600: {
+        backgroundColor: palette.contrast_600,
+      },
+      bg_contrast_700: {
+        backgroundColor: palette.contrast_700,
+      },
+      bg_contrast_800: {
+        backgroundColor: palette.contrast_800,
+      },
+      bg_contrast_900: {
+        backgroundColor: palette.contrast_900,
+      },
+      bg_contrast_950: {
+        backgroundColor: palette.contrast_950,
+      },
+      bg_contrast_975: {
+        backgroundColor: palette.contrast_975,
+      },
+      border_contrast_low: {
+        borderColor: palette.contrast_100,
+      },
+      border_contrast_medium: {
+        borderColor: palette.contrast_200,
+      },
+      border_contrast_high: {
+        borderColor: palette.contrast_300,
+      },
+      shadow_sm: {
+        ...atoms.shadow_sm,
+        shadowColor: palette.black,
+      },
+      shadow_md: {
+        ...atoms.shadow_md,
+        shadowColor: palette.black,
+      },
+      shadow_lg: {
+        ...atoms.shadow_lg,
+        shadowColor: palette.black,
+      },
+    },
+  }
+
+  return {scheme, palette, theme}
+}
 
 export function createThemes({
   hues,
@@ -55,9 +234,12 @@ export function createThemes({
   lightPalette: Palette
   darkPalette: Palette
   dimPalette: Palette
+  materialYouPalette?: Palette
   light: Theme
   dark: Theme
   dim: Theme
+  materialYou?: Theme
+  materialYouScheme: 'light' | 'dark'
 } {
   const color = {
     like: '#ec4899',
@@ -574,12 +756,20 @@ export function createThemes({
     },
   }
 
+  const materialYou = createMaterialYou({
+    light: lightPalette,
+    dark: darkPalette,
+  })
+
   return {
     lightPalette,
     darkPalette,
     dimPalette,
+    materialYouPalette: materialYou.palette,
     light,
     dark,
     dim,
+    materialYou: materialYou.theme,
+    materialYouScheme: materialYou.scheme,
   }
 }
