@@ -58,6 +58,7 @@
     "icons:optimize": "svgo -f ./assets/icons"
   },
   "dependencies": {
+    "@assembless/react-native-material-you": "^1.0.0-beta.4",
     "@atproto/api": "^0.15.3",
     "@bitdrift/react-native": "^0.6.8",
     "@braintree/sanitize-url": "^6.0.2",
